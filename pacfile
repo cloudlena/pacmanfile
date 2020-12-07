@@ -1,0 +1,52 @@
+#!/bin/bash
+
+set -u -e
+
+usage_msg='
+NAME:
+  pacfile - Manage your pacman packages declaratively
+
+USAGE:
+  pacfile command
+
+COMMANDS:
+  sync   Synchronize your installed packages with your pacfile
+'
+
+package_manager=pacman
+if [ -x "$(command -v yay)" ]; then
+  package_manager=yay
+fi
+
+config_dir=${XDG_CONFIG_HOME:-$HOME/.config}
+
+pacfile_packages=$(sort --unique "${config_dir}"/pacfile/pacfile*.txt)
+installed_packages=$($package_manager --query --explicit --quiet | sort --unique)
+
+function sync {
+  to_install=$(diff --new-line-format="" --unchanged-line-format="" <(echo "$pacfile_packages") <(echo "$installed_packages"))
+  if [ -n "$to_install" ]; then
+    echo "$to_install" | xargs $package_manager --sync --noconfirm
+  fi
+
+  to_remove=$(diff --new-line-format="" --unchanged-line-format="" <(echo "$installed_packages") <(echo "$pacfile_packages"))
+  if [ -n "$to_remove" ]; then
+    echo "$to_remove" | xargs $package_manager --remove --nosave --recursive --noconfirm
+  fi
+}
+
+if [ $# -eq 0 ]; then
+  echo "$usage_msg"
+  exit 1
+fi
+
+case $1 in
+  sync)
+    sync "$@"
+    ;;
+
+  *)
+    echo "$usage_msg"
+    exit 1
+    ;;
+esac
