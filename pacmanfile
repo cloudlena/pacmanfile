@@ -1,16 +1,16 @@
 #!/bin/bash
 
-set -u -e
+set -u
 
 usage_msg='
 NAME:
-  pacfile - Manage your pacman packages declaratively
+  pacmanfile - Manage your pacman packages declaratively
 
 USAGE:
-  pacfile command
+  pacmanfile command
 
 COMMANDS:
-  sync   Synchronize your installed packages with your pacfile
+  sync   Synchronize your installed packages with your pacmanfile
 '
 
 package_manager=pacman
@@ -20,16 +20,16 @@ fi
 
 config_dir=${XDG_CONFIG_HOME:-$HOME/.config}
 
-pacfile_packages=$(sort --unique "${config_dir}"/pacfile/pacfile*.txt)
+pacmanfile_packages=$(sort --unique "${config_dir}"/pacmanfile/pacmanfile*.txt | grep -E '^[^#].+')
 installed_packages=$($package_manager --query --explicit --quiet | sort --unique)
 
 function sync {
-  to_install=$(diff --new-line-format="" --unchanged-line-format="" <(echo "$pacfile_packages") <(echo "$installed_packages"))
+  to_install=$(diff --new-line-format="" --unchanged-line-format="" <(echo "$pacmanfile_packages") <(echo "$installed_packages"))
   if [ -n "$to_install" ]; then
     echo "$to_install" | xargs $package_manager --sync --noconfirm
   fi
 
-  to_remove=$(diff --new-line-format="" --unchanged-line-format="" <(echo "$installed_packages") <(echo "$pacfile_packages"))
+  to_remove=$(diff --new-line-format="" --unchanged-line-format="" <(echo "$installed_packages") <(echo "$pacmanfile_packages"))
   if [ -n "$to_remove" ]; then
     echo "$to_remove" | xargs $package_manager --remove --nosave --recursive --noconfirm
   fi
