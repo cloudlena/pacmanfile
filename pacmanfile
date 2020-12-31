@@ -6,11 +6,15 @@ usage_msg='
 NAME:
   pacmanfile - Manage your pacman packages declaratively
 
-USAGE:
-  pacmanfile command
+SYNOPSIS:
+  pacmanfile <operations> [options]
 
-COMMANDS:
+OPERATIONS:
+  help   Show this help
   sync   Synchronize your installed packages with your pacmanfile
+
+OPTIONS:
+  --noconfirm   Install and uninstall without asking for confirmation
 '
 
 package_manager=pacman
@@ -19,30 +23,57 @@ if [ -x "$(command -v yay)" ]; then
 fi
 
 config_dir=${XDG_CONFIG_HOME:-$HOME/.config}
+pacmanfile_dir="${config_dir}/pacmanfile"
 
-pacmanfile_packages=$(sort --unique "${config_dir}"/pacmanfile/pacmanfile*.txt | grep -E '^[^#].+')
-installed_packages=$($package_manager --query --explicit --quiet | sort --unique)
+# Parse arguments
+operation=help
+option_confirm='--confirm'
+
+while [[ $# -gt 0 ]]; do
+  key="$1"
+
+  case $key in
+      sync)
+        operation=sync
+        shift
+        ;;
+      --noconfirm)
+        option_confirm='--noconfirm'
+        shift
+        ;;
+      *)
+        shift
+        ;;
+  esac
+done
 
 function sync {
+  pacmanfile_packages=$(sort --unique "${pacmanfile_dir}"/pacmanfile*.txt | grep -E '^[^#].+')
+  installed_packages=$($package_manager --query --explicit --quiet | sort --unique)
+
   to_install=$(diff --new-line-format="" --unchanged-line-format="" <(echo "$pacmanfile_packages") <(echo "$installed_packages"))
   if [ -n "$to_install" ]; then
-    echo "$to_install" | xargs $package_manager --sync --noconfirm
+    $package_manager "$option_confirm" --sync $to_install
   fi
 
   to_remove=$(diff --new-line-format="" --unchanged-line-format="" <(echo "$installed_packages") <(echo "$pacmanfile_packages"))
   if [ -n "$to_remove" ]; then
-    echo "$to_remove" | xargs $package_manager --remove --nosave --recursive --noconfirm
+    $package_manager "$option_confirm" --remove --nosave --recursive $to_remove
+  fi
+
+  if [ -z "$to_install" ] && [ -z "$to_remove" ]; then
+    echo "Everything is synced"
   fi
 }
 
-if [ $# -eq 0 ]; then
-  echo "$usage_msg"
-  exit 1
-fi
-
-case $1 in
+case $operation in
   sync)
     sync "$@"
+    ;;
+
+  help)
+    echo "$usage_msg"
+    exit
     ;;
 
   *)
