@@ -11,6 +11,7 @@ SYNOPSIS:
 
 OPERATIONS:
   help   Show this help
+  dump   Dump your installed packages into a pacmanfile
   sync   Synchronize your installed packages with your pacmanfile
 
 OPTIONS:
@@ -36,19 +37,35 @@ while [[ $# -gt 0 ]]; do
   key="$1"
 
   case $key in
+      dump)
+        operation=dump
+        shift
+        ;;
+
       sync)
         operation=sync
         shift
         ;;
+
       --noconfirm)
         option_confirm='--noconfirm'
         shift
         ;;
+
       *)
         shift
         ;;
   esac
 done
+
+function dump {
+  dump_file="${pacmanfile_dir}/pacmanfile-dumped.txt"
+  installed_packages=$($package_manager --query --explicit --quiet | sort --unique)
+
+  echo "$installed_packages" >> "$dump_file"
+
+  echo "Installed packages dumped to $dump_file"
+}
 
 function sync {
   pacmanfile_packages=$(sort --unique "${pacmanfile_dir}"/pacmanfile*.txt | grep -E '^[^#].+')
@@ -70,13 +87,17 @@ function sync {
 }
 
 case $operation in
+  dump)
+    dump "$@"
+    ;;
+
   sync)
     sync "$@"
     ;;
 
   help)
     echo "$usage_msg"
-    exit
+    exit 0
     ;;
 
   *)
