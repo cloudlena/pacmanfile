@@ -62,7 +62,7 @@ function dump {
   dump_file="${pacmanfile_dir}/pacmanfile-dumped.txt"
   installed_packages=$($package_manager --query --explicit --quiet | sort --unique)
 
-  echo "$installed_packages" >> "$dump_file"
+  echo "$installed_packages" > "$dump_file"
 
   echo "Installed packages dumped to $dump_file"
 }
