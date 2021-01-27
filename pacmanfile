@@ -21,6 +21,9 @@ package_manager=pacman
 if [ -x "$(command -v yay)" ]; then
   package_manager=yay
 fi
+if [ -x "$(command -v paru)" ]; then
+  package_manager=paru
+fi
 
 config_dir=${XDG_CONFIG_HOME:-$HOME/.config}
 pacmanfile_dir="${config_dir}/pacmanfile"
