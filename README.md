@@ -1,6 +1,8 @@
 # Pacmanfile
 
-Pacmanfile is a tool that allows to declaratively define which packages you want to have installed via Arch Linux' [Pacman](https://wiki.archlinux.org/index.php/Pacman) or [Yay](https://aur.archlinux.org/packages/yay/) to include packages from the [AUR](https://aur.archlinux.org/).
+[![pacmanfile](https://img.shields.io/aur/version/pacmanfile?color=1793d1&label=pacmanfile&logo=arch-linux&style=for-the-badge)](https://aur.archlinux.org/packages/pacmanfile/)
+
+Pacmanfile is a tool that allows to declaratively define which packages you want to have installed via Arch Linux' [Pacman](https://wiki.archlinux.org/index.php/Pacman), [Yay](https://aur.archlinux.org/packages/yay/) or [Paru](https://github.com/morganamilo/paru) to include packages from the [AUR](https://aur.archlinux.org/).
 
 ## Installation
 
@@ -21,7 +23,7 @@ Pacmanfile is available in the [AUR](https://aur.archlinux.org/packages/pacmanfi
    zsh
    ```
 
-   You can split the file up into any number of files that match `pacmanfile*.txt` (e.g. `pacmanfile.extra.txt`).
+   You can split the file up into any number of files that match `pacmanfile*.txt` (e.g. `pacmanfile-extra.txt`).
 
    A good way to start is to use the `pacmanfile dump` command which dumps your currently explicitly installed packages into a pacmanfile.
 
