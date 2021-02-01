@@ -8,11 +8,15 @@ Pacmanfile is a tool that allows to declaratively define which packages you want
 
 Pacmanfile is available in the [AUR](https://aur.archlinux.org/packages/pacmanfile/).
 
-1. Run `yay -S pacmanfile`
+1. Run `paru -S pacmanfile`
 
 ## Usage
 
-1. Create a `pacmanfile.txt` file in your `$XDG_CONFIG_HOME/pacmanfile` directory (usually `~/.config/pacmanfile`) which contains all the packages you want to have installed. Here's an example:
+1. Run `pacmanfile help` to get an overview of the existing commands and flags.
+
+1. Run `pacmanfile dump` which dumps your currently explicitly installed packages into a pacmanfile.
+
+   Alternatively, you can manually create a `pacmanfile.txt` file in your `$XDG_CONFIG_HOME/pacmanfile` directory (usually `~/.config/pacmanfile`) which contains all the packages you want to have installed. Here's an example:
 
    ```txt
    alacritty
@@ -25,6 +29,4 @@ Pacmanfile is available in the [AUR](https://aur.archlinux.org/packages/pacmanfi
 
    You can split the file up into any number of files that match `pacmanfile*.txt` (e.g. `pacmanfile-extra.txt`).
 
-   A good way to start is to use the `pacmanfile dump` command which dumps your currently explicitly installed packages into a pacmanfile.
-
-1. Run `pacmanfile sync`. This will remove any packages that you have installed which are not listed in `pacmanfile.txt` and install any packages that you have not yet installed but that are listed in `pacmanfile.txt`.
+1. Run `pacmanfile sync`. This will remove any packages that you have installed which are not listed in `pacmanfile*.txt` and install any packages that you have not yet installed but that are listed in `pacmanfile*.txt`.
