@@ -29,6 +29,11 @@ fi
 config_dir=${XDG_CONFIG_HOME:-$HOME/.config}
 pacmanfile_dir="${config_dir}/pacmanfile"
 
+# Create config folder if not present
+if [ ! -d $pacmanfile_dir ]; then
+	mkdir -p $pacmanfile_dir
+fi
+
 # Parse arguments
 operation=help
 option_confirm='--confirm'
