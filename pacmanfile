@@ -59,13 +59,14 @@ while [[ $# -gt 0 ]]; do
 done
 
 function dump {
-  
-  # Create config folder if not present
-  if [ ! -d $pacmanfile_dir ]; then
-  	mkdir -p $pacmanfile_dir
-  fi
+
   dump_file="${pacmanfile_dir}/pacmanfile-dumped.txt"
   installed_packages=$($package_manager --query --explicit --quiet | sort --unique)
+
+  # Create config folder if not present
+  if [ ! -d "$pacmanfile_dir" ]; then
+        mkdir -p "$pacmanfile_dir"
+  fi
 
   echo "$installed_packages" > "$dump_file"
 
