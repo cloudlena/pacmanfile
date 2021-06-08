@@ -30,3 +30,7 @@ Pacmanfile is available in the [AUR](https://aur.archlinux.org/packages/pacmanfi
    You can split the file up into any number of files that match `pacmanfile*.txt` (e.g. `pacmanfile-extra.txt`).
 
 1. Run `pacmanfile sync`. This will remove any packages that you have installed which are not listed in `pacmanfile*.txt` and install any packages that you have not yet installed but that are listed in `pacmanfile*.txt`.
+
+## Limitations
+
+Currently, installing groups with `pacmanfile` is not supported. The workaround is to list all the members of the group individually in your file.
