@@ -73,7 +73,7 @@ function dump {
 }
 
 function sync {
-  pacmanfile_packages=$(sort --unique "${pacmanfile_dir}"/pacmanfile*.txt | grep -E '^[^#].+')
+  pacmanfile_packages=$(sort --unique "${pacmanfile_dir}"/pacmanfile*.txt | grep -E '^[^#].*')
   installed_packages=$($package_manager --query --explicit --quiet | sort --unique)
 
   to_install=$(diff --new-line-format="" --unchanged-line-format="" <(echo "$pacmanfile_packages") <(echo "$installed_packages"))
