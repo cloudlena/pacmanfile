@@ -78,11 +78,13 @@ function sync {
 
   to_install=$(diff --new-line-format="" --unchanged-line-format="" <(echo "$pacmanfile_packages") <(echo "$installed_packages"))
   if [ -n "$to_install" ]; then
+    # shellcheck disable=SC2086
     $package_manager "$option_confirm" --sync $to_install
   fi
 
   to_remove=$(diff --new-line-format="" --unchanged-line-format="" <(echo "$installed_packages") <(echo "$pacmanfile_packages"))
   if [ -n "$to_remove" ]; then
+    # shellcheck disable=SC2086
     $package_manager "$option_confirm" --remove --nosave --recursive $to_remove
   fi
 
