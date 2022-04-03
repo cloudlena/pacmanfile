@@ -20,10 +20,10 @@ OPTIONS:
 
 package_manager=pacman
 if [ -x "$(command -v yay)" ]; then
-  package_manager=yay
+    package_manager=yay
 fi
 if [ -x "$(command -v paru)" ]; then
-  package_manager=paru
+    package_manager=paru
 fi
 
 config_dir=${XDG_CONFIG_HOME:-$HOME/.config}
@@ -34,80 +34,80 @@ operation=help
 option_confirm='--confirm'
 
 while [[ $# -gt 0 ]]; do
-  key="$1"
+    key="$1"
 
-  case $key in
-      dump)
+    case $key in
+    dump)
         operation=dump
         shift
         ;;
 
-      sync)
+    sync)
         operation=sync
         shift
         ;;
 
-      --noconfirm)
+    --noconfirm)
         option_confirm='--noconfirm'
         shift
         ;;
 
-      *)
+    *)
         shift
         ;;
-  esac
+    esac
 done
 
 function dump {
-  dump_file="${pacmanfile_dir}/pacmanfile-dumped.txt"
-  installed_packages=$($package_manager --query --explicit --quiet | sort --unique)
+    dump_file="${pacmanfile_dir}/pacmanfile-dumped.txt"
+    installed_packages=$($package_manager --query --explicit --quiet | sort --unique)
 
-  # Create config folder if not present
-  if [ ! -d "$pacmanfile_dir" ]; then
+    # Create config folder if not present
+    if [ ! -d "$pacmanfile_dir" ]; then
         mkdir -p "$pacmanfile_dir"
-  fi
+    fi
 
-  echo "$installed_packages" > "$dump_file"
+    echo "$installed_packages" >"$dump_file"
 
-  echo "Installed packages dumped to $dump_file"
+    echo "Installed packages dumped to $dump_file"
 }
 
 function sync {
-  pacmanfile_packages=$(sort --unique "${pacmanfile_dir}"/pacmanfile*.txt | grep -E '^[^#].*')
-  installed_packages=$($package_manager --query --explicit --quiet | sort --unique)
+    pacmanfile_packages=$(sort --unique "${pacmanfile_dir}"/pacmanfile*.txt | grep -E '^[^#].*')
+    installed_packages=$($package_manager --query --explicit --quiet | sort --unique)
 
-  to_install=$(diff --new-line-format="" --unchanged-line-format="" <(echo "$pacmanfile_packages") <(echo "$installed_packages"))
-  if [ -n "$to_install" ]; then
-    # shellcheck disable=SC2086
-    $package_manager "$option_confirm" --sync $to_install
-  fi
+    to_install=$(diff --new-line-format="" --unchanged-line-format="" <(echo "$pacmanfile_packages") <(echo "$installed_packages"))
+    if [ -n "$to_install" ]; then
+        # shellcheck disable=SC2086
+        $package_manager "$option_confirm" --sync --needed $to_install
+    fi
 
-  to_remove=$(diff --new-line-format="" --unchanged-line-format="" <(echo "$installed_packages") <(echo "$pacmanfile_packages"))
-  if [ -n "$to_remove" ]; then
-    # shellcheck disable=SC2086
-    $package_manager "$option_confirm" --remove --nosave --recursive $to_remove
-  fi
+    to_remove=$(diff --new-line-format="" --unchanged-line-format="" <(echo "$installed_packages") <(echo "$pacmanfile_packages"))
+    if [ -n "$to_remove" ]; then
+        # shellcheck disable=SC2086
+        $package_manager "$option_confirm" --remove --nosave --recursive $to_remove
+    fi
 
-  if [ -z "$to_install" ] && [ -z "$to_remove" ]; then
-    echo "Everything is synced"
-  fi
+    if [ -z "$to_install" ] && [ -z "$to_remove" ]; then
+        echo "Everything is synced"
+    fi
 }
 
 case $operation in
-  dump)
+dump)
     dump "$@"
     ;;
 
-  sync)
+sync)
     sync "$@"
     ;;
 
-  help)
+help)
     echo "$usage_msg"
     exit 0
     ;;
 
-  *)
+*)
     echo "$usage_msg"
     exit 1
     ;;
