@@ -64,7 +64,7 @@ function dump {
 
     # Create config folder if not present
     if [ ! -d "$pacmanfile_dir" ]; then
-        mkdir -p "$pacmanfile_dir"
+        mkdir --parents "$pacmanfile_dir"
     fi
 
     echo "$installed_packages" >"$dump_file"
