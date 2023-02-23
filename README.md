@@ -35,4 +35,6 @@ Pacmanfile is available in the [AUR](https://aur.archlinux.org/packages/pacmanfi
 
 ## Limitations
 
+Pacmanfile expects its packages to be installed explicitly. In case it complains about a package not being installed, you need to change that package's installation reason to explicit by running `sudo pacman -D --asexplicit PACKAGE_NAME`.
+
 Currently, installing groups with `pacmanfile` is not supported. The workaround is to list all the members of the group individually in your file.
